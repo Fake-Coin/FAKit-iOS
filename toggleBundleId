@@ -3,7 +3,7 @@ require 'xcodeproj'
 project_path = './breadwallet.xcodeproj'
 $project = Xcodeproj::Project.open(project_path)
 
-$production_id = 'org.voisine.breadwallet'
+$production_id = 'in.fakco.fakit'
 $development_id = 'com.breadwalet.new'
 
 desired_targets = ['breadwallet', 'breadwallet WatchKit App', 'breadwallet WatchKit Extension', 'MessagesExtension', 'TodayExtension', 'NotificationServiceExtension']

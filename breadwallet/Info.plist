@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Bread</string>
+	<string>FAKit</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -67,7 +67,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>org.voisine.bread</string>
+			<string>in.fakco.bread</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>bread</string>
