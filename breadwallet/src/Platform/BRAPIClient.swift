@@ -155,7 +155,7 @@ open class BRAPIClient : NSObject, URLSessionDelegate, URLSessionTaskDelegate, B
             let authKey = authKey,
             let signingData = mutableRequest.signingString.data(using: .utf8) {
             let sig = signingData.sha256_2.compactSign(key: authKey)
-            let hval = "bread \(token):\(sig.base58)"
+            let hval = "FAKit \(token):\(sig.base58)"
             mutableRequest.setValue(hval, forHTTPHeaderField: "Authorization")
         }
         return mutableRequest
@@ -163,7 +163,7 @@ open class BRAPIClient : NSObject, URLSessionDelegate, URLSessionTaskDelegate, B
     
     private func decorateRequest(_ request: URLRequest) -> URLRequest {
         var actualRequest = request
-        actualRequest.setValue("\(E.isTestnet ? 1 : 0)", forHTTPHeaderField: "X-Bitcoin-Testnet")
+        actualRequest.setValue("\(E.isTestnet ? 1 : 0)", forHTTPHeaderField: "X-FakeCoin-Testnet")
         actualRequest.setValue("\((E.isTestFlight || E.isDebug) ? 1 : 0)", forHTTPHeaderField: "X-Testflight")
         actualRequest.setValue(Locale.current.identifier, forHTTPHeaderField: "Accept-Language")
         return actualRequest
@@ -329,7 +329,7 @@ open class BRAPIClient : NSObject, URLSessionDelegate, URLSessionTaskDelegate, B
                 // follow the redirect if we're interacting with our API
                 actualRequest = decorateRequest(request)
                 log("redirecting \(String(describing: currentReq.url)) to \(String(describing: request.url))")
-                if let curAuth = currentReq.allHTTPHeaderFields?["Authorization"], curAuth.hasPrefix("bread") {
+                if let curAuth = currentReq.allHTTPHeaderFields?["Authorization"], curAuth.hasPrefix("FAKit") {
                     // add authentication because the previous request was authenticated
                     log("adding authentication to redirected request")
                     actualRequest = signRequest(actualRequest)
@@ -382,7 +382,7 @@ fileprivate extension HTTPURLResponse {
     var isBreadChallenge: Bool {
         if let headers = allHeaderFields as? [String: String],
             let challenge = headers.get(lowercasedKey: "www-authenticate") {
-            if challenge.lowercased().hasPrefix("bread") {
+            if challenge.lowercased().hasPrefix("FAKit") {
                 return true
             }
         }

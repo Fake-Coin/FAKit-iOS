@@ -97,7 +97,7 @@ class Sender {
                 }
                 group.leave()
             }
-            let result = group.wait(timeout: .now() + 4.0)
+            let result = group.wait(timeout: .now() + 30.0)
             if result == .timedOut {
                 let alert = UIAlertController(title: "Error", message: "Did not sign tx within timeout", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -163,15 +163,15 @@ class Sender {
 
         let request = NSMutableURLRequest(url: url, cachePolicy: .reloadIgnoringCacheData, timeoutInterval: protocolPaymentTimeout)
 
-        request.setValue("application/bitcoin-payment", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/bitcoin-paymentack", forHTTPHeaderField: "Accept")
+        request.setValue("application/fakecoin-payment", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/fakecoin-paymentack", forHTTPHeaderField: "Accept")
         request.httpMethod = "POST"
         request.httpBody = Data(bytes: payment!.bytes)
 
         URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
             guard error == nil else { print("payment error: \(error!)"); return }
             guard let response = response, let data = data else { print("no response or data"); return }
-            if response.mimeType == "application/bitcoin-paymentack" && data.count <= 50000 {
+            if response.mimeType == "application/fakecoin-paymentack" && data.count <= 50000 {
                 if let ack = PaymentProtocolACK(data: data) {
                     print("received ack: \(ack)") //TODO - show memo to user
                 } else {
