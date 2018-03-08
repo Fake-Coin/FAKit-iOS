@@ -430,6 +430,7 @@ class ModalPresenter : Subscriber, Trackable {
             ]
         ]
 
+        /*
         if BRAPIClient.featureEnabled(.earlyAccess) {
             rows["FAKit"]?.insert(Setting(title: S.Settings.earlyAccess, callback: {
                 settingsNav.dismiss(animated: true, completion: {
@@ -451,7 +452,7 @@ class ModalPresenter : Subscriber, Trackable {
                 }))
                 self.topViewController?.present(alert, animated: true, completion: nil)
             })
-        )
+        )*/
 
         let settings = SettingsViewController(sections: sections, rows: rows)
         settings.addCloseNavigationItem()
