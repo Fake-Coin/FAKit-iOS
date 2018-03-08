@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "LogoCutout.pdf",
+      "filename" : "logo-cutout-1x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "logo-cutout-2x.png",
       "scale" : "2x"
     },
     {
