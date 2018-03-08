@@ -37,8 +37,8 @@ struct C {
     static let btcCurrencyCode = "FAK"
     static let null = "(null)"
     static let maxMemoLength = 250
-    static let feedbackEmail = "contact@loafwallet.org"
-    static let reviewLink = "https://itunes.apple.com/app/loafwallet-litecoin-wallet/id1119332592?action=write-review"
+    static let feedbackEmail = "fako@scyne.com"
+    static let reviewLink = ""
     static var standardPort: Int {
         return E.isTestnet ? 19335 : 9333
     }
