@@ -12,30 +12,30 @@
 			<key>CFBundleTypeIconFiles</key>
 			<array/>
 			<key>CFBundleTypeName</key>
-			<string>Bitcoin Payment Request</string>
+			<string>FakeCoin Payment Request</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>bitcoin.paymentrequest</string>
+				<string>fakecoin.paymentrequest</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
 			<array/>
 			<key>CFBundleTypeName</key>
-			<string>Bitcoin Payment</string>
+			<string>FakeCoin Payment</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>bitcoin.payment</string>
+				<string>fakecoin.payment</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeIconFiles</key>
 			<array/>
 			<key>CFBundleTypeName</key>
-			<string>Bitcoin Payment ACK</string>
+			<string>FakeCoin Payment ACK</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>bitcoin.paymentack</string>
+				<string>fakecoin.paymentack</string>
 			</array>
 		</dict>
 	</array>
@@ -57,20 +57,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>bitcoin</string>
+			<string>fakecoin</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>bitcoin</string>
+				<string>fakecoin</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>in.fakco.bread</string>
+			<string>in.fakco.fakit</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>bread</string>
+				<string>fakit</string>
 			</array>
 		</dict>
 		<dict>
@@ -143,13 +143,13 @@
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Bitcoin Payment Request</string>
+			<string>FakeCoin Payment Request</string>
 			<key>UTTypeIdentifier</key>
-			<string>bitcoin.paymentrequest</string>
+			<string>fakecoin.paymentrequest</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.mime-type</key>
-				<string>application/bitcoin-paymentrequest</string>
+				<string>application/fakecoin-paymentrequest</string>
 			</dict>
 		</dict>
 		<dict>
@@ -158,13 +158,13 @@
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Bitcoin Payment</string>
+			<string>FakeCoin Payment</string>
 			<key>UTTypeIdentifier</key>
-			<string>bitcoin.payment</string>
+			<string>fakecoin.payment</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.mime-type</key>
-				<string>application/bitcoin-payment</string>
+				<string>application/fakecoin-payment</string>
 			</dict>
 		</dict>
 		<dict>
@@ -173,13 +173,13 @@
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Bitcoin Payment ACK</string>
+			<string>FakeCoin Payment ACK</string>
 			<key>UTTypeIdentifier</key>
-			<string>bitcoin.paymentack</string>
+			<string>fakecoin.paymentack</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.mime-type</key>
-				<string>application/bitcoin-paymentack</string>
+				<string>application/fakecoin-paymentack</string>
 			</dict>
 		</dict>
 	</array>
