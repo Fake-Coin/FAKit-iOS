@@ -36,9 +36,6 @@ class TouchIdSettingsViewController : UIViewController, Subscriber {
     }
 
     override func viewDidLoad() {
-        store.subscribe(self, selector: { $0.currentRate != $1.currentRate }, callback: {
-            self.rate = $0.currentRate
-        })
         addSubviews()
         addConstraints()
         setData()
@@ -128,9 +125,8 @@ class TouchIdSettingsViewController : UIViewController, Subscriber {
     }
 
     private var textViewText: NSAttributedString {
-        guard let rate = rate else { return NSAttributedString(string: "") }
-        let amount = Amount(amount: walletManager.spendingLimit, rate: rate, maxDigits: store.state.maxDigits)
-        let string = "\(String(format: S.TouchIdSettings.spendingLimit, amount.bits, amount.localCurrency))\n\n\(String(format: S.TouchIdSettings.customizeText, S.TouchIdSettings.linkText))"
+        let amount = Amount(amount: walletManager.spendingLimit, maxDigits: store.state.maxDigits)
+        let string = "\(String(format: S.TouchIdSettings.spendingLimit, amount.bits))\n\n\(String(format: S.TouchIdSettings.customizeText, S.TouchIdSettings.linkText))"
         let linkText = S.TouchIdSettings.linkText
         let attributedString = NSMutableAttributedString(string: string, attributes: [
                 NSAttributedStringKey.font: UIFont.customBody(size: 13.0),

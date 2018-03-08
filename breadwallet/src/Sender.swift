@@ -31,7 +31,6 @@ class Sender {
     private let store: Store
     var transaction: BRTxRef?
     var protocolRequest: PaymentProtocolRequest?
-    var rate: Rate?
     var comment: String?
     var feePerKb: UInt64?
 
@@ -60,10 +59,9 @@ class Sender {
     }
 
     //Amount in bits
-    func send(touchIdMessage: String, rate: Rate?, comment: String?, feePerKb: UInt64, verifyPinFunction: @escaping (@escaping(String) -> Bool) -> Void, completion:@escaping (SendResult) -> Void) {
+    func send(touchIdMessage: String, comment: String?, feePerKb: UInt64, verifyPinFunction: @escaping (@escaping(String) -> Bool) -> Void, completion:@escaping (SendResult) -> Void) {
         guard let tx = transaction else { return completion(.creationError(S.Send.createTransactionError)) }
 
-        self.rate = rate
         self.comment = comment
         self.feePerKb = feePerKb
 
@@ -136,10 +134,8 @@ class Sender {
     }
 
     private func setMetaData() {
-        guard let rate = rate, let tx = transaction, let feePerKb = feePerKb else { print("Incomplete tx metadata"); return }
+        guard let tx = transaction, let feePerKb = feePerKb else { print("Incomplete tx metadata"); return }
         let metaData = TxMetaData(transaction: tx.pointee,
-                                  exchangeRate: rate.rate,
-                                  exchangeRateCurrency: rate.code,
                                   feeRate: Double(feePerKb),
                                   deviceId: UserDefaults.standard.deviceID,
                                   comment: comment)

@@ -14,11 +14,8 @@ struct State {
     let rootModal: RootModal
     let walletState: WalletState
     let isBtcSwapped: Bool
-    let currentRate: Rate?
-    let rates: [Rate]
     let alert: AlertType?
     let isTouchIdEnabled: Bool
-    let defaultCurrencyCode: String
     let recommendRescan: Bool
     let isLoadingTransactions: Bool
     let maxDigits: Int
@@ -35,11 +32,8 @@ extension State {
                         rootModal: .none,
                         walletState: WalletState.initial,
                         isBtcSwapped: UserDefaults.isBtcSwapped,
-                        currentRate: UserDefaults.currentRate,
-                        rates: [],
                         alert: nil,
                         isTouchIdEnabled: UserDefaults.isTouchIdEnabled,
-                        defaultCurrencyCode: UserDefaults.defaultCurrencyCode,
                         recommendRescan: false,
                         isLoadingTransactions: false,
                         maxDigits: UserDefaults.maxDigits,

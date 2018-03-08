@@ -48,10 +48,8 @@ class TouchIdSpendingLimitViewController : UITableViewController, Subscriber {
 
         //If the user has a limit that is not a current option, we display their limit
         if !limits.contains(walletManager.spendingLimit) {
-            if let rate = store.state.currentRate {
-                let spendingLimit = Amount(amount: walletManager.spendingLimit, rate: rate, maxDigits: store.state.maxDigits)
-                setAmount(limitAmount: spendingLimit)
-            }
+            let spendingLimit = Amount(amount: walletManager.spendingLimit, maxDigits: store.state.maxDigits)
+            setAmount(limitAmount: spendingLimit)
         }
     }
 
@@ -69,8 +67,8 @@ class TouchIdSpendingLimitViewController : UITableViewController, Subscriber {
         if limit == 0 {
             cell.textLabel?.text = S.TouchIdSpendingLimit.requirePasscode
         } else {
-            let displayAmount = DisplayAmount(amount: Satoshis(rawValue: limit), state: store.state, selectedRate: nil, minimumFractionDigits: 0)
-            cell.textLabel?.text = displayAmount.combinedDescription
+            let displayAmount = DisplayAmount(amount: Satoshis(rawValue: limit), state: store.state, minimumFractionDigits: 0)
+            cell.textLabel?.text = displayAmount.description
         }
         if limits[indexPath.row] == selectedLimit {
             let check = UIImageView(image: #imageLiteral(resourceName: "CircleCheck").withRenderingMode(.alwaysTemplate))
@@ -108,7 +106,7 @@ class TouchIdSpendingLimitViewController : UITableViewController, Subscriber {
     }
 
     private func setAmount(limitAmount: Amount) {
-        amount.text = "\(limitAmount.bits) = \(limitAmount.localCurrency)"
+        amount.text = "\(limitAmount.bits)"
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -12,7 +12,6 @@ struct Amount {
 
     //MARK: - Public
     let amount: UInt64 //amount in satoshis
-    let rate: Rate
     let maxDigits: Int
     
     var amountForBtcFormat: Double {
@@ -20,10 +19,6 @@ struct Amount {
         var amount: Decimal = 0.0
         NSDecimalMultiplyByPowerOf10(&amount, &decimal, Int16(-maxDigits), .up)
         return NSDecimalNumber(decimal: amount).doubleValue
-    }
-
-    var localAmount: Double {
-        return Double(amount)/100000000.0*rate.rate
     }
 
     var bits: String {
@@ -35,24 +30,8 @@ struct Amount {
         return string
     }
 
-    var localCurrency: String {
-        guard let string = localFormat.string(from: Double(amount)/100000000.0*rate.rate as NSNumber) else { return "" }
-        return string
-    }
-
-    func string(forLocal local: Locale) -> String {
-        let format = NumberFormatter()
-        format.locale = local
-        format.isLenient = true
-        format.numberStyle = .currency
-        format.generatesDecimalNumbers = true
-        format.negativeFormat = format.positiveFormat.replacingCharacters(in: format.positiveFormat.range(of: "#")!, with: "-#")
-        guard let string = format.string(from: Double(amount)/100000000.0*rate.rate as NSNumber) else { return "" }
-        return string
-    }
-
     func string(isBtcSwapped: Bool) -> String {
-        return isBtcSwapped ? localCurrency : bits
+        return bits
     }
 
     var btcFormat: NumberFormatter {
@@ -83,36 +62,15 @@ struct Amount {
 
         return format
     }
-
-    var localFormat: NumberFormatter {
-        let format = NumberFormatter()
-        format.isLenient = true
-        format.numberStyle = .currency
-        format.generatesDecimalNumbers = true
-        format.negativeFormat = format.positiveFormat.replacingCharacters(in: format.positiveFormat.range(of: "#")!, with: "-#")
-        format.currencySymbol = rate.currencySymbol
-        return format
-    }
 }
 
 struct DisplayAmount {
     let amount: Satoshis
     let state: State
-    let selectedRate: Rate?
     let minimumFractionDigits: Int?
 
     var description: String {
-        return selectedRate != nil ? fiatDescription : bitcoinDescription
-    }
-
-    var combinedDescription: String {
-        return state.isBtcSwapped ? "\(fiatDescription) (\(bitcoinDescription))" : "\(bitcoinDescription) (\(fiatDescription))"
-    }
-
-    private var fiatDescription: String {
-        guard let rate = selectedRate ?? state.currentRate else { return "" }
-        guard let string = localFormat.string(from: Double(amount.rawValue)/100000000.0*rate.rate as NSNumber) else { return "" }
-        return string
+        return bitcoinDescription
     }
 
     private var bitcoinDescription: String {
@@ -130,11 +88,6 @@ struct DisplayAmount {
         format.numberStyle = .currency
         format.generatesDecimalNumbers = true
         format.negativeFormat = format.positiveFormat.replacingCharacters(in: format.positiveFormat.range(of: "#")!, with: "-#")
-        if let rate = selectedRate {
-            format.currencySymbol = rate.currencySymbol
-        } else if let rate = state.currentRate {
-            format.currencySymbol = rate.currencySymbol
-        }
         if let minimumFractionDigits = minimumFractionDigits {
             format.minimumFractionDigits = minimumFractionDigits
         }

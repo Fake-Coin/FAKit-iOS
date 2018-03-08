@@ -33,8 +33,6 @@ open class TxMetaData : BRKVStoreObject, BRCoding {
     var classVersion: Int = 2
     
     var blockHeight: Int = 0
-    var exchangeRate: Double = 0
-    var exchangeRateCurrency: String = ""
     var feeRate: Double = 0
     var size: Int = 0
     var created: Date = Date.zeroValue()
@@ -48,8 +46,6 @@ open class TxMetaData : BRKVStoreObject, BRCoding {
             return nil
         }
         blockHeight = decoder.decode("bh")
-        exchangeRate = decoder.decode("er")
-        exchangeRateCurrency = decoder.decode("erc")
         feeRate = decoder.decode("fr")
         size = decoder.decode("s")
         deviceId = decoder.decode("dId")
@@ -61,8 +57,6 @@ open class TxMetaData : BRKVStoreObject, BRCoding {
     func encode(_ coder: BRCoder) {
         coder.encode(classVersion, key: "classVersion")
         coder.encode(blockHeight, key: "bh")
-        coder.encode(exchangeRate, key: "er")
-        coder.encode(exchangeRateCurrency, key: "erc")
         coder.encode(feeRate, key: "fr")
         coder.encode(size, key: "s")
         coder.encode(created, key: "c")
@@ -111,7 +105,7 @@ open class TxMetaData : BRKVStoreObject, BRCoding {
     }
     
     /// Create new transaction metadata
-    public init(transaction: BRTransaction, exchangeRate: Double, exchangeRateCurrency: String, feeRate: Double,
+    public init(transaction: BRTransaction, feeRate: Double,
                 deviceId: String, comment: String? = nil) {
         print("[BRTxMetadataObject] new \(transaction.txHash.txKey)")
         super.init(key: transaction.txHash.txKey, version: 0, lastModified: Date(), deleted: false, data: Data())
@@ -119,8 +113,6 @@ open class TxMetaData : BRKVStoreObject, BRCoding {
         self.created = Date()
         var txn = transaction
         self.size = BRTransactionSize(&txn)
-        self.exchangeRate = exchangeRate
-        self.exchangeRateCurrency = exchangeRateCurrency
         self.feeRate = feeRate
         self.deviceId = deviceId
         self.comment = comment ?? ""
@@ -136,8 +128,6 @@ open class TxMetaData : BRKVStoreObject, BRCoding {
             return
         }
         blockHeight = s.blockHeight
-        exchangeRate = s.exchangeRate
-        exchangeRateCurrency = s.exchangeRateCurrency
         feeRate = s.feeRate
         size = s.size
         created = s.created

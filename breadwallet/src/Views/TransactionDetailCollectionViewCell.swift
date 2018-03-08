@@ -22,20 +22,19 @@ class TransactionDetailCollectionViewCell : UICollectionViewCell {
         NotificationCenter.default.removeObserver(self)
     }
 
-    func set(transaction: Transaction, isBtcSwapped: Bool, rate: Rate, rates: [Rate], maxDigits: Int) {
+    func set(transaction: Transaction, isBtcSwapped: Bool, maxDigits: Int) {
         timestamp.text = transaction.longTimestamp
-        amount.text = String(format: transaction.direction.amountFormat, "\(transaction.amountDescription(isBtcSwapped: isBtcSwapped, rate: rate, maxDigits: maxDigits))")
+        amount.text = String(format: transaction.direction.amountFormat, "\(transaction.amountDescription(isBtcSwapped: isBtcSwapped, maxDigits: maxDigits))")
         address.text = transaction.detailsAddressText
         status.text = transaction.status
         comment.text = transaction.comment
-        amountDetails.text = transaction.amountDetails(isBtcSwapped: isBtcSwapped, rate: rate, rates: rates, maxDigits: maxDigits)
+        amountDetails.text = transaction.amountDetails(isBtcSwapped: isBtcSwapped, maxDigits: maxDigits)
         addressHeader.text = transaction.direction.addressHeader.capitalized
         fullAddress.setTitle(transaction.toAddress ?? "", for: .normal)
         txHash.setTitle(transaction.hash, for: .normal)
         availability.isHidden = !transaction.shouldDisplayAvailableToSpend
         blockHeight.text = transaction.blockHeight
         self.transaction = transaction
-        self.rate = rate
     }
 
     var closeCallback: (() -> Void)? {
@@ -50,7 +49,6 @@ class TransactionDetailCollectionViewCell : UICollectionViewCell {
 
     var kvStore: BRReplicatedKVStore?
     var transaction: Transaction?
-    var rate: Rate?
     var store: Store? {
         didSet {
             if oldValue == nil {
@@ -315,9 +313,8 @@ class TransactionDetailCollectionViewCell : UICollectionViewCell {
                 print("could not update metadata: \(error)")
             }
         } else {
-            guard let rate = self.rate else { return }
             guard let transaction = self.transaction else { return }
-            let newMetaData = TxMetaData(transaction: transaction.rawTransaction, exchangeRate: rate.rate, exchangeRateCurrency: rate.code, feeRate: 0.0, deviceId: UserDefaults.standard.deviceID)
+            let newMetaData = TxMetaData(transaction: transaction.rawTransaction, feeRate: 0.0, deviceId: UserDefaults.standard.deviceID)
             newMetaData.comment = comment
             do {
                 let _ = try kvStore.set(newMetaData)

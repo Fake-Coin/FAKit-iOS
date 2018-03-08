@@ -32,7 +32,6 @@ class TransactionDetailsViewController : UICollectionViewController, Subscriber 
     fileprivate let kvStore: BRReplicatedKVStore
     fileprivate let cellIdentifier = "CellIdentifier"
     fileprivate var isBtcSwapped: Bool
-    fileprivate var rate: Rate?
 
     //The secretScrollView is to help with the limitation where if isPagingEnabled
     //is true, the page size has to be the bounds.width of the collectionview.
@@ -54,7 +53,6 @@ class TransactionDetailsViewController : UICollectionViewController, Subscriber 
         collectionView?.contentInset = UIEdgeInsetsMake(C.padding[2], C.padding[2], C.padding[2], C.padding[2])
         setupScrolling()
         store.subscribe(self, selector: { $0.isBtcSwapped != $1.isBtcSwapped }, callback: { self.isBtcSwapped = $0.isBtcSwapped })
-        store.subscribe(self, selector: { $0.currentRate != $1.currentRate }, callback: { self.rate = $0.currentRate })
         store.lazySubscribe(self, selector: { $0.walletState.transactions != $1.walletState.transactions }, callback: {
             self.transactions = $0.walletState.transactions
             self.collectionView?.reloadData()
@@ -132,8 +130,7 @@ extension TransactionDetailsViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath)
         guard let transactionDetailCell = item as? TransactionDetailCollectionViewCell else { return item }
-        guard let rate = rate else { return item }
-        transactionDetailCell.set(transaction: transactions[indexPath.row], isBtcSwapped: isBtcSwapped, rate: rate, rates: store.state.rates, maxDigits: store.state.maxDigits)
+        transactionDetailCell.set(transaction: transactions[indexPath.row], isBtcSwapped: isBtcSwapped, maxDigits: store.state.maxDigits)
         transactionDetailCell.closeCallback = { [weak self] in
             if let delegate = self?.transitioningDelegate as? ModalTransitionDelegate {
                 delegate.reset()

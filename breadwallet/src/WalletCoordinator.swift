@@ -130,7 +130,7 @@ class WalletCoordinator : Subscriber, Trackable {
         updateTimer = nil
         DispatchQueue.walletQueue.async {
             guard let txRefs = self.walletManager.wallet?.transactions else { return }
-            let transactions = self.makeTransactionViewModels(transactions: txRefs, walletManager: self.walletManager, kvStore: self.kvStore, rate: self.store.state.currentRate)
+            let transactions = self.makeTransactionViewModels(transactions: txRefs, walletManager: self.walletManager, kvStore: self.kvStore)
             if transactions.count > 0 {
                 DispatchQueue.main.async {
                     self.store.perform(action: WalletChange.setTransactions(transactions))
@@ -139,7 +139,7 @@ class WalletCoordinator : Subscriber, Trackable {
         }
     }
 
-    func makeTransactionViewModels(transactions: [BRTxRef?], walletManager: WalletManager, kvStore: BRReplicatedKVStore?, rate: Rate?) -> [Transaction] {
+    func makeTransactionViewModels(transactions: [BRTxRef?], walletManager: WalletManager, kvStore: BRReplicatedKVStore?) -> [Transaction] {
         return transactions.flatMap{ $0 }.sorted {
                 if $0.pointee.timestamp == 0 {
                     return true
@@ -149,7 +149,7 @@ class WalletCoordinator : Subscriber, Trackable {
                     return $0.pointee.timestamp > $1.pointee.timestamp
                 }
             }.flatMap {
-                return Transaction($0, walletManager: walletManager, kvStore: kvStore, rate: rate)
+                return Transaction($0, walletManager: walletManager, kvStore: kvStore)
         }
     }
 
@@ -201,15 +201,13 @@ class WalletCoordinator : Subscriber, Trackable {
     }
 
     private func showReceived(amount: UInt64) {
-        if let rate = store.state.currentRate {
-            let amount = Amount(amount: amount, rate: rate, maxDigits: store.state.maxDigits)
-            let primary = store.state.isBtcSwapped ? amount.localCurrency : amount.bits
-            let secondary = store.state.isBtcSwapped ? amount.bits : amount.localCurrency
-            let message = String(format: S.TransactionDetails.received, "\(primary) (\(secondary))")
-            store.trigger(name: .lightWeightAlert(message))
-            showLocalNotification(message: message)
-            ping()
-        }
+        let amount = Amount(amount: amount, maxDigits: store.state.maxDigits)
+        let primary = amount.bits
+        let secondary = amount.bits
+        let message = String(format: S.TransactionDetails.received, "\(primary) (\(secondary))")
+        store.trigger(name: .lightWeightAlert(message))
+        showLocalNotification(message: message)
+        ping()
     }
 
     private func ping() {

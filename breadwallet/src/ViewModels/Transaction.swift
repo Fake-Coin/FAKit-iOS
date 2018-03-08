@@ -14,7 +14,7 @@ import BRCore
 class Transaction {
 
     //MARK: - Public
-    init?(_ tx: BRTxRef, walletManager: WalletManager, kvStore: BRReplicatedKVStore?, rate: Rate?) {
+    init?(_ tx: BRTxRef, walletManager: WalletManager, kvStore: BRReplicatedKVStore?) {
         guard let wallet = walletManager.wallet else { return nil }
         guard let peerManager = walletManager.peerManager  else { return nil }
 
@@ -51,19 +51,19 @@ class Transaction {
         self.hash = tx.pointee.txHash.description
         self.metaDataKey = tx.pointee.txHash.txKey
 
-        if let rate = rate, confirms < 6 && direction == .received {
-            attemptCreateMetaData(tx: tx, rate: rate)
+        if confirms < 6 && direction == .received {
+            attemptCreateMetaData(tx: tx)
         }
 
     }
 
-    func amountDescription(isBtcSwapped: Bool, rate: Rate, maxDigits: Int) -> String {
-        let amount = Amount(amount: satoshis, rate: rate, maxDigits: maxDigits)
-        return isBtcSwapped ? amount.localCurrency : amount.bits
+    func amountDescription(isBtcSwapped: Bool, maxDigits: Int) -> String {
+        let amount = Amount(amount: satoshis, maxDigits: maxDigits)
+        return amount.bits
     }
 
-    func descriptionString(isBtcSwapped: Bool, rate: Rate, maxDigits: Int) -> NSAttributedString {
-        let amount = Amount(amount: satoshis, rate: rate, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped)
+    func descriptionString(isBtcSwapped: Bool, maxDigits: Int) -> NSAttributedString {
+        let amount = Amount(amount: satoshis, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped)
         let format = direction.amountDescriptionFormat
         let string = String(format: format, amount)
         return string.attributedStringForTags
@@ -74,33 +74,19 @@ class Transaction {
         return String(format: direction.addressTextFormat, address ?? S.TransactionDetails.account)
     }
 
-    func amountDetails(isBtcSwapped: Bool, rate: Rate, rates: [Rate], maxDigits: Int) -> String {
-        let feeAmount = Amount(amount: fee, rate: rate, maxDigits: maxDigits)
+    func amountDetails(isBtcSwapped: Bool, maxDigits: Int) -> String {
+        let feeAmount = Amount(amount: fee, maxDigits: maxDigits)
         let feeString = direction == .sent ? String(format: S.Transaction.fee, "\(feeAmount.string(isBtcSwapped: isBtcSwapped))") : ""
-        let amountString = "\(direction.sign)\(Amount(amount: satoshis, rate: rate, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped)) \(feeString)"
-        var startingString = String(format: S.Transaction.starting, "\(Amount(amount: startingBalance, rate: rate, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped))")
-        var endingString = String(format: String(format: S.Transaction.ending, "\(Amount(amount: balanceAfter, rate: rate, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped))"))
+        let amountString = "\(direction.sign)\(Amount(amount: satoshis, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped)) \(feeString)"
+        var startingString = String(format: S.Transaction.starting, "\(Amount(amount: startingBalance, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped))")
+        var endingString = String(format: String(format: S.Transaction.ending, "\(Amount(amount: balanceAfter, maxDigits: maxDigits).string(isBtcSwapped: isBtcSwapped))"))
 
         if startingBalance > C.maxMoney {
             startingString = ""
             endingString = ""
         }
 
-        var exchangeRateInfo = ""
-        if let metaData = metaData, let currentRate = rates.filter({ $0.code.lowercased() == metaData.exchangeRateCurrency.lowercased() }).first {
-            let difference = (currentRate.rate - metaData.exchangeRate)/metaData.exchangeRate*100.0
-            let prefix = difference > 0.0 ? "+" : "-"
-            let firstLine = direction == .sent ? S.Transaction.exchangeOnDaySent : S.Transaction.exchangeOnDayReceived
-            let nf = NumberFormatter()
-            nf.currencySymbol = currentRate.currencySymbol
-            nf.numberStyle = .currency
-            if let rateString = nf.string(from: metaData.exchangeRate as NSNumber) {
-                let secondLine = "\(rateString)/fak \(prefix)\(String(format: "%.2f", difference))%"
-                exchangeRateInfo = "\(firstLine)\n\(secondLine)"
-            }
-        }
-
-        return "\(amountString)\n\n\(startingString)\n\(endingString)\n\n\(exchangeRateInfo)"
+        return "\(amountString)\n\n\(startingString)\n\(endingString)"
     }
 
     let direction: TransactionDirection
@@ -138,10 +124,6 @@ class Transaction {
             return output.swiftAddress
         }
     }()
-
-    var exchangeRate: Double? {
-        return metaData?.exchangeRate
-    }
 
     var comment: String? {
         return metaData?.comment
@@ -259,11 +241,9 @@ class Transaction {
         return df
     }()
 
-    private func attemptCreateMetaData(tx: BRTxRef, rate: Rate) {
+    private func attemptCreateMetaData(tx: BRTxRef) {
         guard metaData == nil else { return }
         let newData = TxMetaData(transaction: tx.pointee,
-                                          exchangeRate: rate.rate,
-                                          exchangeRateCurrency: rate.code,
                                           feeRate: 0.0,
                                           deviceId: UserDefaults.standard.deviceID)
         do {

@@ -40,6 +40,7 @@ extension BRAPIClient {
         task.resume()
     }
     
+    /*
     func exchangeRates(isFallback: Bool = false, _ handler: @escaping (_ rates: [Rate], _ error: String?) -> Void) {
         let request = isFallback ? URLRequest(url: URL(string: fallbackRatesURL)!) : URLRequest(url: url("/rates"))
         let task = dataTaskWithRequest(request) { (data, response, error) in
@@ -66,7 +67,7 @@ extension BRAPIClient {
             }
         }
         task.resume()
-    }
+    }*/
     
     func savePushNotificationToken(_ token: Data) {
         var req = URLRequest(url: url("/me/push-devices"))
@@ -101,24 +102,6 @@ extension BRAPIClient {
                 if statusCode >= 200 && statusCode < 300 {
                     UserDefaults.pushToken = nil
                     self.log("deleted old token")
-                }
-            }
-        }.resume()
-    }
-
-    func publishBCashTransaction(_ txData: Data, callback: @escaping (String?) -> Void) {
-        var req = URLRequest(url: url("/bch/publish-transaction"))
-        req.httpMethod = "POST"
-        req.setValue("application/bcashdata", forHTTPHeaderField: "Content-Type")
-        req.httpBody = txData
-        dataTaskWithRequest(req as URLRequest, authenticated: true, retryCount: 0) { (dat, resp, er) in
-            if let statusCode = resp?.statusCode {
-                if statusCode >= 200 && statusCode < 300 {
-                    callback(nil)
-                } else if let data = dat, let errorString = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
-                    callback(errorString as String)
-                } else {
-                    callback("\(statusCode)")
                 }
             }
         }.resume()

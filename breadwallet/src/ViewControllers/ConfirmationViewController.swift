@@ -10,12 +10,11 @@ import UIKit
 
 class ConfirmationViewController : UIViewController, ContentBoxPresenter {
 
-    init(amount: Satoshis, fee: Satoshis, feeType: Fee, state: State, selectedRate: Rate?, minimumFractionDigits: Int?, address: String, isUsingTouchId: Bool) {
+    init(amount: Satoshis, fee: Satoshis, feeType: Fee, state: State, minimumFractionDigits: Int?, address: String, isUsingTouchId: Bool) {
         self.amount = amount
         self.feeAmount = fee
         self.feeType = feeType
         self.state = state
-        self.selectedRate = selectedRate
         self.minimumFractionDigits = minimumFractionDigits
         self.addressText = address
         self.isUsingTouchId = isUsingTouchId
@@ -26,7 +25,6 @@ class ConfirmationViewController : UIViewController, ContentBoxPresenter {
     private let feeAmount: Satoshis
     private let feeType: Fee
     private let state: State
-    private let selectedRate: Rate?
     private let minimumFractionDigits: Int?
     private let addressText: String
     private let isUsingTouchId: Bool
@@ -138,11 +136,11 @@ class ConfirmationViewController : UIViewController, ContentBoxPresenter {
         view.backgroundColor = .clear
         payLabel.text = S.Confirmation.send
 
-        let displayAmount = DisplayAmount(amount: amount, state: state, selectedRate: selectedRate, minimumFractionDigits: minimumFractionDigits)
-        let displayFee = DisplayAmount(amount: feeAmount, state: state, selectedRate: selectedRate, minimumFractionDigits: minimumFractionDigits)
-        let displayTotal = DisplayAmount(amount: amount + feeAmount, state: state, selectedRate: selectedRate, minimumFractionDigits: minimumFractionDigits)
+        let displayAmount = DisplayAmount(amount: amount, state: state, minimumFractionDigits: minimumFractionDigits)
+        let displayFee = DisplayAmount(amount: feeAmount, state: state, minimumFractionDigits: minimumFractionDigits)
+        let displayTotal = DisplayAmount(amount: amount + feeAmount, state: state, minimumFractionDigits: minimumFractionDigits)
 
-        amountLabel.text = displayAmount.combinedDescription
+        amountLabel.text = displayAmount.description
 
         toLabel.text = S.Confirmation.to
         address.text = addressText

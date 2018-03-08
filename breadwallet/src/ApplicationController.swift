@@ -22,7 +22,6 @@ class ApplicationController : Subscriber, Trackable {
 
     fileprivate var walletManager: WalletManager?
     private var walletCoordinator: WalletCoordinator?
-    private var exchangeUpdater: ExchangeUpdater?
     private var feeUpdater: FeeUpdater?
     private let transitionDelegate: ModalTransitionDelegate
     private var kvStoreCoordinator: KVStoreCoordinator?
@@ -119,7 +118,6 @@ class ApplicationController : Subscriber, Trackable {
         DispatchQueue.walletQueue.async {
             walletManager.peerManager?.connect()
         }
-        exchangeUpdater?.refresh(completion: {})
         feeUpdater?.refresh()
         walletManager.apiClient?.kv?.syncAllKeys { print("KV finished syncing. err: \(String(describing: $0))") }
         walletManager.apiClient?.updateFeatureFlags()
@@ -134,7 +132,6 @@ class ApplicationController : Subscriber, Trackable {
         DispatchQueue.walletQueue.async {
             walletManager.peerManager?.connect()
         }
-        exchangeUpdater?.refresh(completion: {})
         feeUpdater?.refresh()
         walletManager.apiClient?.kv?.syncAllKeys { print("KV finished syncing. err: \(String(describing: $0))") }
         walletManager.apiClient?.updateFeatureFlags()
@@ -176,7 +173,6 @@ class ApplicationController : Subscriber, Trackable {
         store.perform(action: PinLength.set(walletManager.pinLength))
         walletCoordinator = WalletCoordinator(walletManager: walletManager, store: store)
         modalPresenter = ModalPresenter(store: store, walletManager: walletManager, window: window, apiClient: noAuthApiClient)
-        exchangeUpdater = ExchangeUpdater(store: store, walletManager: walletManager)
         feeUpdater = FeeUpdater(walletManager: walletManager, store: store)
         startFlowController = StartFlowPresenter(store: store, walletManager: walletManager, rootViewController: rootViewController)
         accountViewController?.walletManager = walletManager
@@ -208,10 +204,9 @@ class ApplicationController : Subscriber, Trackable {
                     self?.performBackgroundFetch()
                 }
             }
-            exchangeUpdater?.refresh(completion: {
-                self.watchSessionManager.walletManager = self.walletManager
-                self.watchSessionManager.rate = self.store.state.currentRate
-            })
+            
+            self.watchSessionManager.walletManager = self.walletManager
+            
         }
     }
 
@@ -256,10 +251,8 @@ class ApplicationController : Subscriber, Trackable {
         feeUpdater?.refresh()
         defaultsUpdater?.refresh()
         walletManager?.apiClient?.events?.up()
-        exchangeUpdater?.refresh(completion: {
-            self.watchSessionManager.walletManager = self.walletManager
-            self.watchSessionManager.rate = self.store.state.currentRate
-        })
+        
+        self.watchSessionManager.walletManager = self.walletManager
     }
 
     private func addWalletCreationListener() {
@@ -333,7 +326,6 @@ class ApplicationController : Subscriber, Trackable {
 
         group.enter()
         Async.parallel(callbacks: [
-            { self.exchangeUpdater?.refresh(completion: $0) },
             { self.feeUpdater?.refresh(completion: $0) },
             { self.walletManager?.apiClient?.events?.sync(completion: $0) },
             { self.walletManager?.apiClient?.updateFeatureFlags(); $0() }

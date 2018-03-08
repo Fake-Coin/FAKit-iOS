@@ -17,16 +17,8 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
     //MARK: - Public
     init(store: Store) {
         self.store = store
-        self.isBtcSwapped = store.state.isBtcSwapped
-        if let rate = store.state.currentRate {
-            self.exchangeRate = rate
-            let placeholderAmount = Amount(amount: 0, rate: rate, maxDigits: store.state.maxDigits)
-            self.secondaryBalance = UpdatingLabel(formatter: placeholderAmount.localFormat)
-            self.primaryBalance = UpdatingLabel(formatter: placeholderAmount.btcFormat)
-        } else {
-            self.secondaryBalance = UpdatingLabel(formatter: NumberFormatter())
-            self.primaryBalance = UpdatingLabel(formatter: NumberFormatter())
-        }
+        let placeholderAmount = Amount(amount: 0, maxDigits: store.state.maxDigits)
+        self.primaryBalance = UpdatingLabel(formatter: placeholderAmount.btcFormat)
         super.init(frame: CGRect())
     }
 
@@ -36,12 +28,10 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
     private let name = UILabel(font: UIFont.boldSystemFont(ofSize: 17.0))
     private let manage = UIButton(type: .system)
     private let primaryBalance: UpdatingLabel
-    private let secondaryBalance: UpdatingLabel
     private let currencyTapView = UIView()
     private let store: Store
     private let equals = UILabel(font: .customBody(size: smallFontSize), color: .whiteTint)
     private var regularConstraints: [NSLayoutConstraint] = []
-    private var swappedConstraints: [NSLayoutConstraint] = []
     private var hasInitialized = false
     private let modeLabel: UILabel = {
         let label = UILabel()
@@ -67,18 +57,12 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
             }
         }
     }
-    private var exchangeRate: Rate? {
-        didSet { setBalances() }
-    }
     private var logo: UIImageView = {
         let image = UIImageView(image: #imageLiteral(resourceName: "Logo"))
         image.contentMode = .scaleAspectFit
         return image
     }()
     private var balance: UInt64 = 0 {
-        didSet { setBalances() }
-    }
-    private var isBtcSwapped: Bool {
         didSet { setBalances() }
     }
 
@@ -108,8 +92,8 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
         primaryBalance.textColor = .whiteTint
         primaryBalance.font = UIFont.customBody(size: largeFontSize)
 
-        secondaryBalance.textColor = .whiteTint
-        secondaryBalance.font = UIFont.customBody(size: largeFontSize)
+        // secondaryBalance.textColor = .whiteTint
+        // secondaryBalance.font = UIFont.customBody(size: largeFontSize)
 
         search.setImage(#imageLiteral(resourceName: "SearchIcon"), for: .normal)
         search.tintColor = .white
@@ -118,7 +102,7 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
             name.textColor = .red
         }
 
-        equals.text = S.AccountHeader.equals
+        // equals.text = S.AccountHeader.equals
 
         manage.isHidden = true
         name.isHidden = true
@@ -129,7 +113,7 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
         addSubview(name)
         addSubview(manage)
         addSubview(primaryBalance)
-        addSubview(secondaryBalance)
+        // addSubview(secondaryBalance)
         addSubview(search)
         addSubview(currencyTapView)
         addSubview(equals)
@@ -146,8 +130,8 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
                 manage.constraint(.trailing, toView: self, constant: -C.padding[2]),
                 manageTitleLabel.firstBaselineAnchor.constraint(equalTo: name.firstBaselineAnchor) ])
         }
-        secondaryBalance.constrain([
-            secondaryBalance.constraint(.firstBaseline, toView: primaryBalance, constant: 0.0) ])
+        // secondaryBalance.constrain([
+        //     secondaryBalance.constraint(.firstBaseline, toView: primaryBalance, constant: 0.0) ])
 
         equals.translatesAutoresizingMaskIntoConstraints = false
         primaryBalance.translatesAutoresizingMaskIntoConstraints = false
@@ -157,18 +141,10 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
             primaryBalance.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
             equals.firstBaselineAnchor.constraint(equalTo: primaryBalance.firstBaselineAnchor),
             equals.leadingAnchor.constraint(equalTo: primaryBalance.trailingAnchor, constant: C.padding[1]/2.0),
-            secondaryBalance.leadingAnchor.constraint(equalTo: equals.trailingAnchor, constant: C.padding[1]/2.0)
+            // secondaryBalance.leadingAnchor.constraint(equalTo: equals.trailingAnchor, constant: C.padding[1]/2.0)
         ]
 
-        swappedConstraints = [
-            secondaryBalance.firstBaselineAnchor.constraint(equalTo: bottomAnchor, constant: -C.padding[4]),
-            secondaryBalance.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
-            equals.firstBaselineAnchor.constraint(equalTo: secondaryBalance.firstBaselineAnchor),
-            equals.leadingAnchor.constraint(equalTo: secondaryBalance.trailingAnchor, constant: C.padding[1]/2.0),
-            primaryBalance.leadingAnchor.constraint(equalTo: equals.trailingAnchor, constant: C.padding[1]/2.0)
-        ]
-
-        NSLayoutConstraint.activate(isBtcSwapped ? self.swappedConstraints : self.regularConstraints)
+        NSLayoutConstraint.activate(self.regularConstraints)
 
         search.constrain([
             search.constraint(.trailing, toView: self, constant: -C.padding[2]),
@@ -183,8 +159,8 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
             currencyTapView.topAnchor.constraint(equalTo: primaryBalance.topAnchor, constant: -C.padding[1]),
             currencyTapView.bottomAnchor.constraint(equalTo: primaryBalance.bottomAnchor, constant: C.padding[1]) ])
 
-        let gr = UITapGestureRecognizer(target: self, action: #selector(currencySwitchTapped))
-        currencyTapView.addGestureRecognizer(gr)
+        // let gr = UITapGestureRecognizer(target: self, action: #selector(currencySwitchTapped))
+        // currencyTapView.addGestureRecognizer(gr)
 
         logo.constrain([
             logo.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
@@ -214,28 +190,12 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
 
     private func addSubscriptions() {
         store.lazySubscribe(self,
-                        selector: { $0.isBtcSwapped != $1.isBtcSwapped },
-                        callback: { self.isBtcSwapped = $0.isBtcSwapped })
-        store.lazySubscribe(self,
-                        selector: { $0.currentRate != $1.currentRate},
-                        callback: {
-                            if let rate = $0.currentRate {
-                                let placeholderAmount = Amount(amount: 0, rate: rate, maxDigits: $0.maxDigits)
-                                self.secondaryBalance.formatter = placeholderAmount.localFormat
-                                self.primaryBalance.formatter = placeholderAmount.btcFormat
-                            }
-                            self.exchangeRate = $0.currentRate
-                        })
-        
-        store.lazySubscribe(self,
                         selector: { $0.maxDigits != $1.maxDigits},
                         callback: {
-                            if let rate = $0.currentRate {
-                                let placeholderAmount = Amount(amount: 0, rate: rate, maxDigits: $0.maxDigits)
-                                self.secondaryBalance.formatter = placeholderAmount.localFormat
-                                self.primaryBalance.formatter = placeholderAmount.btcFormat
-                                self.setBalances()
-                            }
+                            let placeholderAmount = Amount(amount: 0, maxDigits: $0.maxDigits)
+                            // self.secondaryBalance.formatter = placeholderAmount.btcFormat
+                            self.primaryBalance.formatter = placeholderAmount.btcFormat
+                            self.setBalances()
         })
         store.subscribe(self,
                         selector: { $0.walletState.name != $1.walletState.name },
@@ -248,20 +208,19 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
                             } })
     }
 
+    
     private func setBalances() {
-        guard let rate = exchangeRate else { return }
-        let amount = Amount(amount: balance, rate: rate, maxDigits: store.state.maxDigits)
+        let amount = Amount(amount: balance, maxDigits: store.state.maxDigits)
         if !hasInitialized {
-            let amount = Amount(amount: balance, rate: exchangeRate!, maxDigits: store.state.maxDigits)
-            NSLayoutConstraint.deactivate(isBtcSwapped ? self.regularConstraints : self.swappedConstraints)
-            NSLayoutConstraint.activate(isBtcSwapped ? self.swappedConstraints : self.regularConstraints)
+            let amount = Amount(amount: balance, maxDigits: store.state.maxDigits)
+            NSLayoutConstraint.activate(self.regularConstraints)
             primaryBalance.setValue(amount.amountForBtcFormat)
-            secondaryBalance.setValue(amount.localAmount)
-            if isBtcSwapped {
-                primaryBalance.transform = transform(forView: primaryBalance)
-            } else {
-                secondaryBalance.transform = transform(forView: secondaryBalance)
-            }
+            // secondaryBalance.setValue(amount.localAmount)
+            // if isBtcSwapped {
+            //    primaryBalance.transform = transform(forView: primaryBalance)
+            // }  else {
+            //      secondaryBalance.transform = transform(forView: secondaryBalance)
+            // }
             hasInitialized = true
             hideExtraViews()
         } else {
@@ -269,20 +228,24 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
                 primaryBalance.isHidden = false
             }
 
+            /*
             if secondaryBalance.isHidden {
                 secondaryBalance.isHidden = false
             }
-
+            */
+            
+            
             primaryBalance.setValueAnimated(amount.amountForBtcFormat, completion: { [weak self] in
                 guard let myself = self else { return }
-                if !myself.isBtcSwapped {
-                    myself.primaryBalance.transform = .identity
-                } else {
-                    myself.primaryBalance.transform = myself.transform(forView: myself.primaryBalance)
-                }
+                // if !myself.isBtcSwapped {
+                //    myself.primaryBalance.transform = .identity
+                // } else {
+                     myself.primaryBalance.transform = myself.transform(forView: myself.primaryBalance)
+                // }
                 myself.hideExtraViews()
             })
-            secondaryBalance.setValueAnimated(amount.localAmount, completion: { [weak self] in
+            /*
+            secondaryBalance.setValueAnimated(amount.amountForBtcFormat, completion: { [weak self] in
                 guard let myself = self else { return }
                 if myself.isBtcSwapped {
                     myself.secondaryBalance.transform = .identity
@@ -291,17 +254,19 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
                 }
                 myself.hideExtraViews()
             })
+            */
         }
     }
 
     private func hideExtraViews() {
         var didHide = false
+        /*
         if secondaryBalance.frame.maxX > search.frame.minX {
             secondaryBalance.isHidden = true
             didHide = true
         } else {
             secondaryBalance.isHidden = false
-        }
+        }*/
 
         if primaryBalance.frame.maxX > search.frame.minX {
             primaryBalance.isHidden = true
@@ -316,6 +281,7 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
         drawGradient(rect)
     }
 
+    /*
     @objc private func currencySwitchTapped() {
         layoutIfNeeded()
         UIView.spring(0.7, animations: {
@@ -327,7 +293,7 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
         }) { _ in }
 
         self.store.perform(action: CurrencyChange.toggle())
-    }
+    }*/
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

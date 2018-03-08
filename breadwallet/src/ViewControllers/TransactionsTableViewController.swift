@@ -71,11 +71,6 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
             reload()
         }
     }
-    private var rate: Rate? {
-        didSet {
-            reload()
-        }
-    }
     private let emptyMessage = UILabel.wrapping(font: .customBody(size: 16.0), color: .grayTextTint)
     private var currentPrompt: Prompt? {
         didSet {
@@ -113,10 +108,7 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
         store.subscribe(self,
                         selector: { $0.isBtcSwapped != $1.isBtcSwapped },
                         callback: { self.isBtcSwapped = $0.isBtcSwapped })
-        store.subscribe(self,
-                        selector: { $0.currentRate != $1.currentRate},
-                        callback: { self.rate = $0.currentRate })
-        store.subscribe(self, selector: { $0.maxDigits != $1.maxDigits }, callback: {_ in 
+        store.subscribe(self, selector: { $0.maxDigits != $1.maxDigits }, callback: {_ in
             self.reload()
         })
 
@@ -237,9 +229,9 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
             }
 
             let cell = tableView.dequeueReusableCell(withIdentifier: transactionCellIdentifier, for: indexPath)
-            if let transactionCell = cell as? TransactionTableViewCell, let rate = rate {
+            if let transactionCell = cell as? TransactionTableViewCell {
                 transactionCell.setStyle(style)
-                transactionCell.setTransaction(transactions[indexPath.row], isBtcSwapped: isBtcSwapped, rate: rate, maxDigits: store.state.maxDigits, isSyncing: store.state.walletState.syncState != .success)
+                transactionCell.setTransaction(transactions[indexPath.row], isBtcSwapped: isBtcSwapped, maxDigits: store.state.maxDigits, isSyncing: store.state.walletState.syncState != .success)
             }
             return cell
         }

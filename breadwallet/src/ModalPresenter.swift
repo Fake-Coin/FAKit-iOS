@@ -379,20 +379,10 @@ class ModalPresenter : Subscriber, Trackable {
                 }),
                 Setting(title: S.Settings.touchIdLimit, accessoryText: { [weak self] in
                     guard let myself = self else { return "" }
-                    guard let rate = myself.store.state.currentRate else { return "" }
-                    let amount = Amount(amount: walletManager.spendingLimit, rate: rate, maxDigits: myself.store.state.maxDigits)
-                    return amount.localCurrency
+                    let amount = Amount(amount: walletManager.spendingLimit, maxDigits: myself.store.state.maxDigits)
+                    return amount.bits
                 }, callback: {
                     self.pushTouchIdSpendingLimit(onNc: settingsNav)
-                }),
-                Setting(title: S.Settings.currency, accessoryText: {
-                    let code = self.store.state.defaultCurrencyCode
-                    let components: [String : String] = [NSLocale.Key.currencyCode.rawValue : code]
-                    let identifier = Locale.identifier(fromComponents: components)
-                    return Locale(identifier: identifier).currencyCode ?? ""
-                }, callback: {
-                    guard let wm = self.walletManager else { print("NO WALLET MANAGER!"); return }
-                    settingsNav.pushViewController(DefaultCurrencyViewController(walletManager: wm, store: self.store), animated: true)
                 }),
                 Setting(title: S.Settings.sync, callback: {
                     settingsNav.pushViewController(ReScanViewController(store: self.store), animated: true)

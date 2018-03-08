@@ -130,8 +130,8 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
         addressCell.didReceivePaymentRequest = { [weak self] request in
             self?.handleRequest(request)
         }
-        amountView.balanceTextForAmount = { [weak self] amount, rate in
-            return self?.balanceTextForAmount(amount: amount, rate: rate)
+        amountView.balanceTextForAmount = { [weak self] amount in
+            return self?.balanceTextForAmount(amount: amount)
         }
 
         amountView.didUpdateAmount = { [weak self] amount in
@@ -158,15 +158,15 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
         }
     }
 
-    private func balanceTextForAmount(amount: Satoshis?, rate: Rate?) -> (NSAttributedString?, NSAttributedString?) {
-        let balanceAmount = DisplayAmount(amount: Satoshis(rawValue: balance), state: store.state, selectedRate: rate, minimumFractionDigits: 0)
+    private func balanceTextForAmount(amount: Satoshis?) -> (NSAttributedString?, NSAttributedString?) {
+        let balanceAmount = DisplayAmount(amount: Satoshis(rawValue: balance), state: store.state, minimumFractionDigits: 0)
         let balanceText = balanceAmount.description
         let balanceOutput = String(format: S.Send.balance, balanceText)
         var feeOutput = ""
         var color: UIColor = .grayTextTint
         if let amount = amount, amount.rawValue > 0 {
             let fee = sender.feeForTx(amount: amount.rawValue)
-            let feeAmount = DisplayAmount(amount: Satoshis(rawValue: fee), state: store.state, selectedRate: rate, minimumFractionDigits: 0)
+            let feeAmount = DisplayAmount(amount: Satoshis(rawValue: fee), state: store.state, minimumFractionDigits: 0)
             let feeText = feeAmount.description
             feeOutput = String(format: S.Send.fee, feeText)
             if (balance >= fee) && amount.rawValue > (balance - fee) {
@@ -223,7 +223,7 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
             }
             if let minOutput = walletManager.wallet?.minOutputAmount {
                 guard amount.rawValue >= minOutput else {
-                    let minOutputAmount = Amount(amount: minOutput, rate: Rate.empty, maxDigits: store.state.maxDigits)
+                    let minOutputAmount = Amount(amount: minOutput, maxDigits: store.state.maxDigits)
                     let message = String(format: S.PaymentProtocol.Errors.smallPayment, minOutputAmount.string(isBtcSwapped: store.state.isBtcSwapped))
                     return showAlert(title: S.Alert.error, message: message, buttonLabel: S.Button.ok)
                 }
@@ -240,7 +240,7 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
         }
 
         guard let amount = amount else { return }
-        let confirm = ConfirmationViewController(amount: amount, fee: Satoshis(sender.fee), feeType: feeType ?? .regular, state: store.state, selectedRate: amountView.selectedRate, minimumFractionDigits: amountView.minimumFractionDigits, address: addressCell.address ?? "", isUsingTouchId: sender.canUseTouchId)
+        let confirm = ConfirmationViewController(amount: amount, fee: Satoshis(sender.fee), feeType: feeType ?? .regular, state: store.state, minimumFractionDigits: amountView.minimumFractionDigits, address: addressCell.address ?? "", isUsingTouchId: sender.canUseTouchId)
         confirm.successCallback = {
             confirm.dismiss(animated: true, completion: {
                 self.send()
@@ -288,11 +288,9 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
     }
 
     private func send() {
-        guard let rate = store.state.currentRate else { return }
         guard let feePerKb = walletManager.wallet?.feePerKb else { return }
 
         sender.send(touchIdMessage: S.VerifyPin.touchIdMessage,
-                    rate: rate,
                     comment: descriptionCell.textView.text,
                     feePerKb: feePerKb,
                     verifyPinFunction: { [weak self] pinValidationCallback in
@@ -365,11 +363,11 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
                 self?.confirmProtocolRequest(protoReq: protoReq)
             })
         } else if requestAmount < wallet.minOutputAmount {
-            let amount = Amount(amount: wallet.minOutputAmount, rate: Rate.empty, maxDigits: store.state.maxDigits)
+            let amount = Amount(amount: wallet.minOutputAmount, maxDigits: store.state.maxDigits)
             let message = String(format: S.PaymentProtocol.Errors.smallPayment, amount.bits)
             return showAlert(title: S.PaymentProtocol.Errors.smallOutputErrorTitle, message: message, buttonLabel: S.Button.ok)
         } else if isOutputTooSmall {
-            let amount = Amount(amount: wallet.minOutputAmount, rate: Rate.empty, maxDigits: store.state.maxDigits)
+            let amount = Amount(amount: wallet.minOutputAmount, maxDigits: store.state.maxDigits)
             let message = String(format: S.PaymentProtocol.Errors.smallTransaction, amount.bits)
             return showAlert(title: S.PaymentProtocol.Errors.smallOutputErrorTitle, message: message, buttonLabel: S.Button.ok)
         }
