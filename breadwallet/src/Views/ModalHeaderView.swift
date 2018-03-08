@@ -73,6 +73,7 @@ class ModalHeaderView : UIView {
     }
 
     private func addFaqButton() {
+        return
         guard let faq = faq else { return }
         addSubview(faq)
         faq.constrain([
