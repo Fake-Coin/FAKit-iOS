@@ -10,7 +10,7 @@ import UIKit
 
 private let largeFontSize: CGFloat = 26.0
 private let smallFontSize: CGFloat = 13.0
-private let logoWidth: CGFloat = 0.22 //percentage of width
+private let logoWidth: CGFloat = 0.15 //percentage of width
 
 class AccountHeaderView : UIView, GradientDrawable, Subscriber {
 
