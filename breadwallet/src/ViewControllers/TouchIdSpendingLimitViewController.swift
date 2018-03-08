@@ -40,9 +40,9 @@ class TouchIdSpendingLimitViewController : UITableViewController, Subscriber {
         titleLabel.sizeToFit()
         navigationItem.titleView = titleLabel
 
-        let faqButton = UIButton.buildFaqButton(store: store, articleId: ArticleIds.touchIdSpendingLimit)
-        faqButton.tintColor = .darkText
-        navigationItem.rightBarButtonItems = [UIBarButtonItem.negativePadding, UIBarButtonItem(customView: faqButton)]
+//         let faqButton = UIButton.buildFaqButton(store: store, articleId: ArticleIds.touchIdSpendingLimit)
+//         faqButton.tintColor = .darkText
+//         navigationItem.rightBarButtonItems = [UIBarButtonItem.negativePadding, UIBarButtonItem(customView: faqButton)]
 
         body.text = S.TouchIdSpendingLimit.body
 

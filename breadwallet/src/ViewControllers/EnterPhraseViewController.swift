@@ -71,7 +71,7 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
         container.addSubview(subheader)
         container.addSubview(errorLabel)
         container.addSubview(instruction)
-        container.addSubview(faq)
+        // container.addSubview(faq)
         container.addSubview(moreInfoButton)
 
         addChildViewController(enterPhrase)
@@ -92,7 +92,7 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
         titleLabel.constrain([
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
             titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[1]),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: faq.leadingAnchor) ])
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -C.padding[2]) ])
         subheader.constrain([
             subheader.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             subheader.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
@@ -110,11 +110,11 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
             errorLabel.topAnchor.constraint(equalTo: enterPhrase.view.bottomAnchor, constant: C.padding[1]),
             errorLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -C.padding[2]),
             errorLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -C.padding[2] )])
-        faq.constrain([
-            faq.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
-            faq.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            faq.widthAnchor.constraint(equalToConstant: 44.0),
-            faq.heightAnchor.constraint(equalToConstant: 44.0) ])
+//        faq.constrain([
+//            faq.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
+//            faq.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
+//            faq.widthAnchor.constraint(equalToConstant: 44.0),
+//            faq.heightAnchor.constraint(equalToConstant: 44.0) ])
         moreInfoButton.constrain([
             moreInfoButton.topAnchor.constraint(equalTo: subheader.bottomAnchor, constant: C.padding[2]),
             moreInfoButton.leadingAnchor.constraint(equalTo: subheader.leadingAnchor) ])

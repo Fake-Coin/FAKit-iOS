@@ -24,9 +24,9 @@ class ModalHeaderView : UIView {
         self.title.text = title
         self.style = style
 
-        if let faqInfo = faqInfo {
-            self.faq = UIButton.buildFaqButton(store: faqInfo.0, articleId: faqInfo.1)
-        }
+        // if let faqInfo = faqInfo {
+        //     self.faq = UIButton.buildFaqButton(store: faqInfo.0, articleId: faqInfo.1)
+        // }
 
         super.init(frame: .zero)
         setupSubviews()
