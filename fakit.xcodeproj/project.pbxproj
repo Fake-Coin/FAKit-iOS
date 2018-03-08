@@ -3471,7 +3471,7 @@
 				CLASSPREFIX = BR;
 				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0810;
-				ORGANIZATIONNAME = "breadwallet LLC";
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					22A9A9951DF63426000F0016 = {
 						CreatedOnToolsVersion = 8.1;
@@ -3562,7 +3562,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 75A2A78B1DA5934300A983D8 /* Build configuration list for PBXProject "breadwallet" */;
+			buildConfigurationList = 75A2A78B1DA5934300A983D8 /* Build configuration list for PBXProject "fakit" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -5923,7 +5923,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		75A2A78B1DA5934300A983D8 /* Build configuration list for PBXProject "breadwallet" */ = {
+		75A2A78B1DA5934300A983D8 /* Build configuration list for PBXProject "fakit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				75A2A7D91DA5934400A983D8 /* Debug */,
