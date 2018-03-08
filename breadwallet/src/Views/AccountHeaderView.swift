@@ -238,9 +238,9 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
             primaryBalance.setValueAnimated(amount.amountForBtcFormat, completion: { [weak self] in
                 guard let myself = self else { return }
                 // if !myself.isBtcSwapped {
-                //    myself.primaryBalance.transform = .identity
+                    myself.primaryBalance.transform = .identity
                 // } else {
-                     myself.primaryBalance.transform = myself.transform(forView: myself.primaryBalance)
+                //     myself.primaryBalance.transform = myself.transform(forView: myself.primaryBalance)
                 // }
                 myself.hideExtraViews()
             })
