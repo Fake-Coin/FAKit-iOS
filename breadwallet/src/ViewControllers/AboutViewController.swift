@@ -30,7 +30,7 @@ class AboutViewController : UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(logoBackground)
         logoBackground.addSubview(logo)
-        view.addSubview(blog)
+        // view.addSubview(blog)
         view.addSubview(twitter)
         view.addSubview(reddit)
         view.addSubview(privacy)
@@ -47,12 +47,12 @@ class AboutViewController : UIViewController {
             logoBackground.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
             logoBackground.heightAnchor.constraint(equalTo: logoBackground.widthAnchor, multiplier: 342.0/553.0) ])
         logo.constrain(toSuperviewEdges: nil)
-        blog.constrain([
-            blog.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
-            blog.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            blog.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
+//        blog.constrain([
+//            blog.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
+//            blog.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            blog.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
         twitter.constrain([
-            twitter.topAnchor.constraint(equalTo: blog.bottomAnchor, constant: C.padding[2]),
+            twitter.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
             twitter.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             twitter.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
         reddit.constrain([
@@ -79,9 +79,9 @@ class AboutViewController : UIViewController {
     }
 
     private func setActions() {
-        blog.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://fakco.in")
-        }
+//        blog.button.tap = strongify(self) { myself in
+//            myself.presentURL(string: "https://fakco.in")
+//        }
         twitter.button.tap = strongify(self) { myself in
             myself.presentURL(string: "https://twitter.com/fakecoin-qt")
         }
