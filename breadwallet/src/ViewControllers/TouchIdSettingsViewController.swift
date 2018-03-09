@@ -118,8 +118,9 @@ class TouchIdSettingsViewController : UIViewController, Subscriber {
 
     private func addFaqButton() {
         return
-        let negativePadding = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        negativePadding.width = -16.0
+        // let negativePadding = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        // negativePadding.width = -16.0
+        
         // let faqButton = UIButton.buildFaqButton(store: store, articleId: ArticleIds.enableTouchId)
         // faqButton.tintColor = .white
         // navigationItem.rightBarButtonItems = [negativePadding, UIBarButtonItem(customView: faqButton)]

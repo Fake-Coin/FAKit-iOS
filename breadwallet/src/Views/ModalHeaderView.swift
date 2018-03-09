@@ -74,13 +74,13 @@ class ModalHeaderView : UIView {
 
     private func addFaqButton() {
         return
-        guard let faq = faq else { return }
-        addSubview(faq)
-        faq.constrain([
-            faq.constraint(.trailing, toView: self, constant: 0.0),
-            faq.constraint(.centerY, toView: self, constant: 0.0),
-            faq.constraint(.height, constant: buttonSize),
-            faq.constraint(.width, constant: buttonSize) ])
+//        guard let faq = faq else { return }
+//        addSubview(faq)
+//        faq.constrain([
+//            faq.constraint(.trailing, toView: self, constant: 0.0),
+//            faq.constraint(.centerY, toView: self, constant: 0.0),
+//            faq.constraint(.height, constant: buttonSize),
+//            faq.constraint(.width, constant: buttonSize) ])
     }
 
     private func setColors() {

@@ -329,7 +329,7 @@ class ModalPresenter : Subscriber, Trackable {
         guard let walletManager = self.walletManager else { return }
         let settingsNav = UINavigationController()
         let sections = ["Wallet", "Manage", "FAKit", "Advanced"]
-        var rows = [
+        let rows = [
             "Wallet": [Setting(title: S.Settings.importTile, callback: { [weak self] in
                     guard let myself = self else { return }
                     guard let walletManager = myself.walletManager else { return }
