@@ -536,7 +536,7 @@ class BRPeerManager {
     init?(wallet: BRWallet, earliestKeyTime: TimeInterval, blocks: [BRBlockRef?], peers: [BRPeer],
           listener: BRPeerManagerListener) {
         var blockRefs = blocks
-        guard let cPtr = BRPeerManagerNew(wallet.cPtr, UInt32(earliestKeyTime + NSTimeIntervalSince1970),
+        guard let cPtr = BRPeerManagerNewMainNet(wallet.cPtr, UInt32(earliestKeyTime + NSTimeIntervalSince1970),
                                           &blockRefs, blockRefs.count, peers, peers.count) else { return nil }
         self.listener = listener
         self.cPtr = cPtr
@@ -574,7 +574,7 @@ class BRPeerManager {
     
     // true if currently connected to at least one peer
     var isConnected: Bool {
-        return BRPeerManagerIsConnected(cPtr) != 0
+        return BRPeerManagerConnectStatus(cPtr) == BRPeerStatusConnected
     }
     
     // connect to bitcoin peer-to-peer network (also call this whenever networkIsReachable() status changes)
