@@ -71,9 +71,9 @@ open class BRAPIClient : NSObject, URLSessionDelegate, URLSessionTaskDelegate, B
     
     // host is the server(s) on which the API is hosted
     #if Testflight || Debug
-    var host = "stage.breadwallet.com"
+    var host = "fakit.fakco.in"
     #else
-    var host = "api.breadwallet.com"
+    var host = "fakit.fakco.in"
     #endif
     
     // isFetchingAuth is set to true when a request is currently trying to renew authentication (the token)
