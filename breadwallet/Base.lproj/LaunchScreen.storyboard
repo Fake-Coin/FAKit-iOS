@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -24,13 +24,39 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="HeaderGradient" translatesAutoresizingMaskIntoConstraints="NO" id="jUk-zo-wxl">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="VtA-4B-rtV">
+                                <rect key="frame" x="102" y="248" width="170" height="170"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="iUH-sK-typ">
+                                        <rect key="frame" x="0.0" y="0.0" width="170" height="170"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Ux6-FP-8tI">
+                                                <rect key="frame" x="0.0" y="0.0" width="170" height="170"/>
+                                                <subviews>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="wZV-R8-cHx">
+                                                        <rect key="frame" x="0.0" y="0.0" width="170" height="170"/>
+                                                    </imageView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="wZV-R8-cHx" firstAttribute="leading" secondItem="Ux6-FP-8tI" secondAttribute="leading" id="ID8-4d-fj6"/>
+                                                    <constraint firstAttribute="bottom" secondItem="wZV-R8-cHx" secondAttribute="bottom" id="bKe-XF-PZw"/>
+                                                    <constraint firstItem="wZV-R8-cHx" firstAttribute="top" secondItem="Ux6-FP-8tI" secondAttribute="top" id="j8I-69-iQs"/>
+                                                    <constraint firstAttribute="trailing" secondItem="wZV-R8-cHx" secondAttribute="trailing" id="kVg-yW-Xbc"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="VtA-4B-rtV" firstAttribute="centerY" secondItem="jUk-zo-wxl" secondAttribute="centerY" id="0R6-lE-Jmo"/>
                             <constraint firstItem="jUk-zo-wxl" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" id="1XD-La-M2f"/>
                             <constraint firstItem="jUk-zo-wxl" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Hgz-we-2c1"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="jUk-zo-wxl" secondAttribute="bottom" id="KFa-Tr-fv3"/>
                             <constraint firstItem="jUk-zo-wxl" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Rw0-rk-cVE"/>
+                            <constraint firstItem="VtA-4B-rtV" firstAttribute="centerX" secondItem="jUk-zo-wxl" secondAttribute="centerX" id="Ujb-Ec-f5X"/>
                         </constraints>
                     </view>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
@@ -42,5 +68,6 @@
     </scenes>
     <resources>
         <image name="HeaderGradient" width="640" height="272"/>
+        <image name="Logo" width="170" height="170"/>
     </resources>
 </document>

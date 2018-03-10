@@ -163,8 +163,8 @@ class AccountHeaderView : UIView, GradientDrawable, Subscriber {
         // currencyTapView.addGestureRecognizer(gr)
 
         logo.constrain([
-            logo.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
-            logo.topAnchor.constraint(equalTo: topAnchor, constant: 30.0),
+            logo.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[1]),
+            logo.topAnchor.constraint(equalTo: topAnchor, constant: 20.0),
             logo.heightAnchor.constraint(equalTo: logo.widthAnchor, multiplier: C.Sizes.logoAspectRatio),
             logo.widthAnchor.constraint(equalTo: widthAnchor, multiplier: logoWidth) ])
         modeLabel.constrain([
