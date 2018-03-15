@@ -83,6 +83,19 @@ BRMerkleBlock *BRMerkleBlockNew(void)
     return block;
 }
 
+// returns a deep copy of block and that must be freed by calling BRMerkleBlockFree()
+BRMerkleBlock *BRMerkleBlockCopy(const BRMerkleBlock *block)
+{
+    BRMerkleBlock *cpy = BRMerkleBlockNew();
+
+    assert(block != NULL);
+    *cpy = *block;
+    cpy->hashes = NULL;
+    cpy->flags = NULL;
+    BRMerkleBlockSetTxHashes(cpy, block->hashes, block->hashesCount, block->flags, block->flagsLen);
+    return cpy;
+}
+
 // buf must contain either a serialized merkleblock or header
 // returns a merkle block struct that must be freed by calling BRMerkleBlockFree()
 BRMerkleBlock *BRMerkleBlockParse(const uint8_t *buf, size_t bufLen)
@@ -269,13 +282,13 @@ int BRMerkleBlockIsValid(const BRMerkleBlock *block, uint32_t currentTime)
     // check if merkle root is correct
     if (block->totalTx > 0 && ! UInt256Eq(merkleRoot, block->merkleRoot)) {
         r = 0;
-        loaf_log("invalid merkleRoot: %s - %s", u256_hex_encode(merkleRoot), u256_hex_encode(block->merkleRoot));
+        loaf_log("invalid merkleRoot: %s - %s", u256hex(merkleRoot), u256hex(block->merkleRoot));
     }
     
     // check if timestamp is too far in future
     if (block->timestamp > currentTime + BLOCK_MAX_TIME_DRIFT) {
         r = 0;
-        loaf_log("timestamp too far in future for block (%s, height = %d): %d - %d", u256_hex_encode(block->blockHash), block->height, block->timestamp, (currentTime + BLOCK_MAX_TIME_DRIFT));
+        loaf_log("timestamp too far in future for block (%s, height = %d): %d - %d", u256hex(block->blockHash), block->height, block->timestamp, (currentTime + BLOCK_MAX_TIME_DRIFT));
     }
     
     // check if proof-of-work target is out of range
@@ -333,11 +346,6 @@ int BRMerkleBlockVerifyDifficulty(const BRMerkleBlock *block, const BRMerkleBloc
     
     if (! previous || !UInt256Eq(block->prevBlock, previous->blockHash) || block->height != previous->height + 1) r = 0;
     if (r && (block->height % BLOCK_DIFFICULTY_INTERVAL) == 0 && transitionTime == 0) r = 0;
-    
-#if BITCOIN_TESTNET
-    // TODO: implement testnet difficulty rule check
-    return r; // don't worry about difficulty on testnet for now
-#endif
     
     // TODO: fix difficulty target check for Litecoin
     // if (r && (block->height % BLOCK_DIFFICULTY_INTERVAL) == 0) {
