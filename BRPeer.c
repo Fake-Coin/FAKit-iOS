@@ -53,6 +53,8 @@
 #define CONNECT_TIMEOUT    3.0
 #define MESSAGE_TIMEOUT    10.0
 
+#define PTHREAD_STACK_SIZE  (512 * 1024)
+
 // the standard blockchain download protocol works as follows (for SPV mode):
 // - local peer sends getblocks
 // - remote peer reponds with inv containing up to 500 block hashes
@@ -1155,6 +1157,7 @@ void BRPeerConnect(BRPeer *peer)
                 //if (ctx->disconnected) ctx->disconnected(ctx->info, error);
             }
             else if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED) != 0 ||
+                     pthread_attr_setstacksize(&attr, PTHREAD_STACK_SIZE) != 0 ||
                      pthread_create(&ctx->thread, &attr, _peerThreadRoutine, peer) != 0) {
                 error = EAGAIN;
                 peer_log(peer, "error creating thread");
@@ -1526,8 +1529,8 @@ void BRPeerFree(BRPeer *peer)
     if (ctx->knownBlockHashes) array_free(ctx->knownBlockHashes);
     if (ctx->knownTxHashes) array_free(ctx->knownTxHashes);
     if (ctx->knownTxHashSet) BRSetFree(ctx->knownTxHashSet);
-    if (ctx->pongInfo) array_free(ctx->pongInfo);
     if (ctx->pongCallback) array_free(ctx->pongCallback);
+    if (ctx->pongInfo) array_free(ctx->pongInfo);
     free(ctx);
 }
 
